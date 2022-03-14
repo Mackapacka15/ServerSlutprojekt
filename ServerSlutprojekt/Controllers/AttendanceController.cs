@@ -10,7 +10,7 @@ namespace ServerSlutprojekt.Controllers
     [ApiController]
     public class AttendanceController : ControllerBase
     {
-        
+
         static AttendanceController()
         {
             string peopleString = System.IO.File.ReadAllText("People.json");
@@ -28,17 +28,19 @@ namespace ServerSlutprojekt.Controllers
             }
             else
             {
-                return NotFound();
+                return NotFound(name);
             }
         }
 
         [HttpPut]
-        public ActionResult Put(Person inPerson)
+        public ActionResult Put(string name)
         {
-            bool personExists = Exists(inPerson.Name);
 
-            if (personExists)
+
+            if (!Exists(name))
             {
+                string[] split = name.Split('─');
+                new Person(split[0], split[1]);
                 return Ok();
             }
             else
@@ -51,7 +53,7 @@ namespace ServerSlutprojekt.Controllers
         {
             foreach (Person item in Person.People)
             {
-                if (item.Name == name)
+                if ((item.Firstname + item.Lastname).ToLower() == name.ToLower())
                 {
                     item.Here = true;
                     return true;
