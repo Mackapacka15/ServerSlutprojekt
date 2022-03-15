@@ -39,17 +39,18 @@ namespace ServerSlutprojekt.Controllers
         public ActionResult Put(string name)
         {
             string[] split = name.Split('─');
-            if (!Exists(split[0], split[1]))
+            if (split.Length == 2)
             {
-                new Person(split[0], split[1], GenerateId());
-                SaveData();
-                LoadData();
-                return Ok();
+                if (!Exists(split[0], split[1]))
+                {
+                    new Person(split[0], split[1], GenerateId());
+                    SaveData();
+                    LoadData();
+                    return Ok();
+                }
             }
-            else
-            {
-                return NotFound();
-            }
+            return NotFound();
+
         }
 
         private bool Exists(string firstname, string lastname)
