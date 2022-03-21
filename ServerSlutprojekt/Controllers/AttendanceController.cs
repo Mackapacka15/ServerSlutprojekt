@@ -11,6 +11,8 @@ namespace ServerSlutprojekt.Controllers
     [ApiController]
     public class AttendanceController : ControllerBase
     {
+
+
         static Random generator = new Random();
 
         static AttendanceController()
@@ -22,35 +24,48 @@ namespace ServerSlutprojekt.Controllers
         [HttpGet]
         public ActionResult Get(string name)
         {
-            string[] split = name.Split('─');
-            bool personExists = Exists(split[0], split[1]);
+            if (name != null)
+            {
+                Console.WriteLine(name);
 
-            if (personExists)
-            {
-                return Ok("Välkommen In");
-            }
-            else
-            {
-                return NotFound(name);
-            }
-        }
-
-        [HttpPut]
-        public ActionResult Put(string name)
-        {
-            string[] split = name.Split('─');
-            if (split.Length == 2)
-            {
-                if (!Exists(split[0], split[1]))
+                string[] split = name.Split('─');
+                if (split.Length == 2)
                 {
-                    new Person(split[0], split[1], GenerateId());
-                    SaveData();
-                    LoadData();
-                    return Ok();
+                    bool personExists = Exists(split[0], split[1]);
+                    if (personExists)
+                    {
+                        SaveData();
+                        return Ok("Välkommen In");
+                    }
+                    else
+                    {
+                        return NotFound("F");
+                    }
                 }
             }
-            return NotFound();
+            return Ok("F.2");
+        }
 
+        [HttpPost]
+        public ActionResult Put(PersonIn person)
+        {
+            string name = person.name;
+            Console.WriteLine("Name: " + name);
+            if (name != null)
+            {
+                string[] split = name.Split('─');
+                if (split.Length == 2)
+                {
+                    if (!Exists(split[0], split[1]))
+                    {
+                        new Person(split[0], split[1], GenerateId());
+                        SaveData();
+                        LoadData();
+                        return Ok();
+                    }
+                }
+            }
+            return NotFound("Ha sämst");
         }
 
         private bool Exists(string firstname, string lastname)
