@@ -11,19 +11,20 @@ namespace ServerSlutprojekt.Controllers
     [ApiController]
     public class AttendanceController : ControllerBase
     {
-
-
+        static RandomList<int> newIdList = new RandomList<int>();
         static Random generator = new Random();
 
         static AttendanceController()
         {
             string peopleString = System.IO.File.ReadAllText("People.json");
             Person.people = JsonSerializer.Deserialize<List<Person>>(peopleString);
+            PopulateId();
         }
 
         [HttpGet]
         public ActionResult Get(string name)
         {
+            LoadData();
             if (name != null)
             {
                 Console.WriteLine(name);
@@ -43,6 +44,7 @@ namespace ServerSlutprojekt.Controllers
                     }
                 }
             }
+            SaveData();
             return Ok("F.2");
         }
 
@@ -58,7 +60,7 @@ namespace ServerSlutprojekt.Controllers
                 {
                     if (!Exists(split[0], split[1]))
                     {
-                        new Person(split[0], split[1], GenerateId());
+                        new Person(split[0], split[1], newIdList.Get());
                         SaveData();
                         LoadData();
                         return Ok();
@@ -80,31 +82,29 @@ namespace ServerSlutprojekt.Controllers
             }
             return false;
         }
-        static int GenerateId()
+        static void PopulateId()
         {
-            bool conflict = true;
-            int id = 0;
-            while (conflict)
+            List<int> usedId = new List<int>();
+            int idAdd = 0;
+            foreach (var item in Person.people)
             {
-                conflict = false;
-                id = generator.Next(100000, 999999);
-                foreach (var item in Person.people)
+                usedId.Add(item.Id);
+            }
+            for (int i = 0; i < 200; i++)
+            {
+                idAdd = generator.Next(100000, 999999);
+                if (!usedId.Contains(idAdd))
                 {
-                    if (item.Id == id)
-                    {
-                        conflict = true;
-                        break;
-                    }
+                    newIdList.Add(idAdd);
                 }
             }
-            return id;
         }
-        private void SaveData()
+        static private void SaveData()
         {
             string jsonstring = JsonSerializer.Serialize<List<Person>>(Person.people);
             System.IO.File.WriteAllText("People.json", jsonstring);
         }
-        private void LoadData()
+        static private void LoadData()
         {
             string peopleString = System.IO.File.ReadAllText("People.json");
             Person.people.Clear();
