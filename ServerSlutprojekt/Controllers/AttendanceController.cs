@@ -12,7 +12,9 @@ namespace ServerSlutprojekt.Controllers
     public class AttendanceController : ControllerBase
     {
         static Queueueueue<int> newIdList = new Queueueueue<int>();
+        static List<string> keys = new List<string>();
         static Random generator = new Random();
+
 
         static AttendanceController()
         {
@@ -22,13 +24,12 @@ namespace ServerSlutprojekt.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get(string name)
+        public ActionResult Get(PersonIn person)    
         {
+            string name = person.Name;
             LoadData();
             if (name != null)
             {
-                Console.WriteLine(name);
-
                 string[] split = name.Split('─');
                 if (split.Length == 2)
                 {
@@ -49,9 +50,9 @@ namespace ServerSlutprojekt.Controllers
         }
 
         [HttpPost]
-        public ActionResult Put(PersonIn person)
+        public ActionResult Post(PersonIn person)
         {
-            string name = person.name;
+            string name = person.Name;
             Console.WriteLine("Name: " + name);
             if (name != null)
             {
@@ -109,6 +110,16 @@ namespace ServerSlutprojekt.Controllers
             string peopleString = System.IO.File.ReadAllText("People.json");
             Person.people.Clear();
             Person.people = JsonSerializer.Deserialize<List<Person>>(peopleString);
+        }
+        static private void LoadKeys()
+        {
+            List<KeyUser> keyUsers = new List<KeyUser>();
+            string keyString = System.IO.File.ReadAllText("ApiKeys.json");
+            keyUsers = JsonSerializer.Deserialize<List<KeyUser>>(keyString);
+            foreach (var item in keyUsers)
+            {
+                keys.Add(item.Key);
+            }
         }
     }
 }
