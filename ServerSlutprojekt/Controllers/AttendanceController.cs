@@ -11,7 +11,7 @@ namespace ServerSlutprojekt.Controllers
     [ApiController]
     public class AttendanceController : ControllerBase
     {
-        static RandomList<int> newIdList = new RandomList<int>();
+        static Queueueueue<int> newIdList = new Queueueueue<int>();
         static Random generator = new Random();
 
         static AttendanceController()
@@ -40,12 +40,12 @@ namespace ServerSlutprojekt.Controllers
                     }
                     else
                     {
-                        return NotFound("F");
+                        return NotFound("Personen hittades inte");
                     }
                 }
             }
             SaveData();
-            return Ok("F.2");
+            return BadRequest("Felakting data Kunde inte läsas");
         }
 
         [HttpPost]
@@ -63,11 +63,11 @@ namespace ServerSlutprojekt.Controllers
                         new Person(split[0], split[1], newIdList.Get());
                         SaveData();
                         LoadData();
-                        return Ok();
+                        return Ok("Tillagd i listan. Välkommen in");
                     }
                 }
             }
-            return NotFound("Ha sämst");
+            return BadRequest("Felaktig Data. Kunde inte läggas till");
         }
 
         private bool Exists(string firstname, string lastname)

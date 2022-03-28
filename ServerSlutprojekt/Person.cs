@@ -17,6 +17,7 @@ namespace ServerSlutprojekt
             Id = id;
             Firstname = firstname;
             Lastname = lastname;
+            Here = true;
             people.Add(this);
         }
 

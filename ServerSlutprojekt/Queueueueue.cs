@@ -2,7 +2,7 @@ using System;
 
 namespace ServerSlutprojekt
 {
-    public class RandomList<T>
+    public class Queueueueue<T>
     {
         static Random genrator = new Random();
         List<T> idList = new List<T>();
