@@ -24,9 +24,20 @@ namespace ServerSlutprojekt.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get(PersonIn person)    
+        public ActionResult Get(string personIn)
         {
-            string name = person.Name;
+            string name;
+            try
+            {
+                PersonIn person = JsonSerializer.Deserialize<PersonIn>(personIn);
+                name = person.Name;
+            }
+            catch (System.Exception)
+            {
+                return BadRequest("Request Failed To Deserialize");
+            }
+
+            Console.WriteLine("hej" + name);
             LoadData();
             if (name != null)
             {
@@ -65,6 +76,10 @@ namespace ServerSlutprojekt.Controllers
                         SaveData();
                         LoadData();
                         return Ok("Tillagd i listan. Välkommen in");
+                    }
+                    else
+                    {
+                        return BadRequest("Du Fanns Redan med i listan. Försök igen");
                     }
                 }
             }
