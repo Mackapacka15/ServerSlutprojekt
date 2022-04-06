@@ -7,7 +7,6 @@ namespace ServerSlutprojekt
     {
         public string Name { get; set; }
 
-        [JsonPropertyName("key")]
         public string Key { get; set; }
     }
 }

@@ -21,27 +21,28 @@ namespace ServerSlutprojekt.Controllers
             string peopleString = System.IO.File.ReadAllText("People.json");
             Person.people = JsonSerializer.Deserialize<List<Person>>(peopleString);
             PopulateId();
+            LoadKeys();
         }
 
         [HttpGet]
         public ActionResult Get(string personIn)
         {
-            string name;
+            PersonIn person;
             try
             {
-                PersonIn person = JsonSerializer.Deserialize<PersonIn>(personIn);
-                name = person.Name;
+                person = JsonSerializer.Deserialize<PersonIn>(personIn);
+                Console.WriteLine(personIn);
             }
             catch (System.Exception)
             {
                 return BadRequest("Request Failed To Deserialize");
             }
 
-            Console.WriteLine("hej" + name);
+            Console.WriteLine("hej" + person.Name);
             LoadData();
-            if (name != null)
+            if (keys.Contains(person.Key))
             {
-                string[] split = name.Split('─');
+                string[] split = person.Name.Split('─');
                 if (split.Length == 2)
                 {
                     bool personExists = Exists(split[0], split[1]);
@@ -55,6 +56,10 @@ namespace ServerSlutprojekt.Controllers
                         return NotFound("Personen hittades inte");
                     }
                 }
+            }
+            else
+            {
+                return BadRequest("API Key not valid");
             }
             SaveData();
             return BadRequest("Felakting data Kunde inte läsas");
